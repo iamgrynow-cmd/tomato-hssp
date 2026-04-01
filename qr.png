@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book-My-HSRP | High Security Registration Plate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --primary-blue: #3d51a6;
+            --text-dark: #333;
+            --bg-light: #f4f7f9;
+            --paytm-blue: #00baf2;
+            --gpay-blue: #4285f4;
+            --phonepe-purple: #5f259f;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        * { box-sizing: border-box; }
+
+        /* --- HEADER & NAV --- */
+        .header {
+            background: #ffffff;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #000;
+            text-decoration: none;
+            border: 3px solid #000;
+            padding: 2px 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding: 5px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav::-webkit-scrollbar { display: none; }
+
+        .nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 700; 
+            font-size: 0.8rem;
+            padding: 8px 14px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav a.active {
+            background: var(--primary-blue);
+            color: #ffffff;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container {
+            max-width: 1100px;
+            margin: 10px auto;
+            padding: 0 10px;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding-bottom: 25px;
+            display: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        #step1 { display: block; }
+
+        .step-header-block {
+            background-color: #f8fafc;
+            border-left: 6px solid var(--primary-blue);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+        }
+
+        .step-header-block h2 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #1e293b;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .step-header-block p {
+            margin: 4px 0 0 0;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #334155;
+            margin: 12px 20px 5px 20px;
+        }
+
+        .input-style {
+            width: calc(100% - 40px);
+            margin: 0 20px;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .input-style:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        .flex-row > div { flex: 1; }
+        .flex-row .input-style { width: 100%; margin: 0; }
+        .flex-row .field-label { margin: 12px 0 5px 0; }
+
+        .btn-next-step {
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            width: calc(100% - 40px);
+            margin: 20px 20px 0 20px;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(61, 81, 166, 0.3);
+        }
+
+        .btn-next-step:active {
+            transform: scale(0.98);
+        }
+
+        /* QR Section */
+        .qr-wrapper { text-align: center; padding: 15px; background: #fff; }
+        .qr-image-main { 
+            width: 100%; 
+            max-width: 250px; 
+            aspect-ratio: 1/1; 
+            margin-bottom: 10px; 
+            object-fit: contain;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .scan-to-pay-text { color: #15803d; font-weight: 800; font-size: 1.3rem; margin: 10px 0; }
+
+        .upi-text-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+        .pay-paytm { color: var(--paytm-blue); }
+        .pay-gpay { color: var(--gpay-blue); }
+        .pay-phonepe { color: var(--phonepe-purple); }
+
+        .pay-via-text { font-size: 0.75rem; color: #64748b; margin-top: 5px; }
+
+        /* Success Page Additional Styles */
+        .success-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .delivery-timeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .footer { 
+            text-align: center; 
+            padding: 25px 15px; 
+            background: #1e293b; 
+            color: #94a3b8; 
+            margin-top: 40px; 
+            font-size: 0.7rem; 
+            line-height: 1.5;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.2rem; }
+            .nav a { padding: 7px 12px; font-size: 0.75rem; }
+            .flex-row { flex-direction: column; gap: 0; }
+            .input-style { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="#" class="logo-text" onclick="location.reload()">BOOK-MY-HSRP</a>
+    <nav class="nav">
+        <a onclick="showTab('step1')" id="navBook" class="active">Book Plate</a>
+        <a onclick="showTab('trackPage')" id="navTrack">Track Order</a>
+        <a onclick="showTab('contactPage')" id="navContact">Contact Us</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <!-- STEP 1: VEHICLE DETAILS -->
+    <div class="form-container" id="step1">
+        <div class="step-header-block">
+            <h2>STEP 1: VEHICLE DETAILS</h2>
+            <p>Select your state and enter vehicle info</p>
+        </div>
+        <label class="field-label">Select State / UT</label>
+        <select class="input-style" id="vState">
+            <option value="">-- Select State / UT --</option>
+            <option>Andaman and Nicobar Islands</option>
+            <option>Andhra Pradesh</option>
+            <option>Arunachal Pradesh</option>
+            <option>Assam</option>
+            <option>Bihar</option>
+            <option>Chandigarh</option>
+            <option>Chhattisgarh</option>
+            <option>Dadra and Nagar Haveli and Daman and Diu</option>
+            <option>Delhi</option>
+            <option>Goa</option>
+            <option>Gujarat</option>
+            <option>Haryana</option>
+            <option>Himachal Pradesh</option>
+            <option>Jammu and Kashmir</option>
+            <option>Jharkhand</option>
+            <option>Karnataka</option>
+            <option>Kerala</option>
+            <option>Ladakh</option>
+            <option>Lakshadweep</option>
+            <option>Madhya Pradesh</option>
+            <option>Maharashtra</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Odisha</option>
+            <option>Puducherry</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+            <option>Sikkim</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+            <option>Tripura</option>
+            <option>Uttar Pradesh</option>
+            <option>Uttarakhand</option>
+            <option>West Bengal</option>
+        </select>
+        
+        <label class="field-label">Registration Number</label>
+        <input type="text" class="input-style" id="vReg" placeholder="DL 01 AB 1234">
+        
+        <div class="flex-row">
+            <div>
+                <label class="field-label">Chassis No. (Last 5)</label>
+                <input type="text" class="input-style" id="vChas" placeholder="12345" maxlength="5">
+            </div>
+            <div>
+                <label class="field-label">Engine No. (Last 5)</label>
+                <input type="text" class="input-style" id="vEng" placeholder="67890" maxlength="5">
+            </div>
+        </div>
+
+        <label class="field-label">Vehicle Category</label>
+        <select class="input-style" id="vCat">
+            <option value="">-- Select Category --</option>
+            <option>Two Wheeler (Scooter/Bike)</option>
+            <option>Three Wheeler</option>
+            <option>Four Wheeler (Car/Jeep)</option>
+            <option>Commercial Vehicle</option>
+        </select>
+
+        <label class="field-label">Fuel Type</label>
+        <select class="input-style" id="vFuel">
+            <option value="">-- Select Fuel --</option>
+            <option>Petrol</option><option>Diesel</option><option>CNG</option><option>EV (Electric)</option>
+        </select>
+
+        <button class="btn-next-step" onclick="toStep2()">Next: Owner Details ➔</button>
+    </div>
+
+    <!-- STEP 2: OWNER DETAILS -->
+    <div class="form-container" id="step2">
+        <div class="step-header-block">
+            <h2>STEP 2: OWNER DETAILS</h2>
+            <p>Address for HSRP delivery and SMS alerts</p>
+        </div>
+        <label class="field-label">Full Name</label>
+        <input type="text" class="input-style" id="oName" placeholder="Owner Name">
+        
+        <label class="field-label">Mobile Number</label>
+        <input type="tel" class="input-style" id="oMob" maxlength="10" placeholder="9876543210">
+
+        <label class="field-label">Email Address</label>
+        <input type="email" class="input-style" id="oEmail" placeholder="name@email.com">
+
+        <div class="flex-row">
+            <div>
+                <label class="field-label">City</label>
+                <input type="text" class="input-style" id="oCity" placeholder="City">
+            </div>
+            <div>
+                <label class="field-label">Pincode</label>
+                <input type="tel" class="input-style" id="oPin" maxlength="6" placeholder="000000">
+            </div>
+        </div>
+
+        <label class="field-label">Full Address</label>
+        <textarea class="input-style" id="oAddr" rows="3" placeholder="House No, Area, Landmark..."></textarea>
+        
+        <button class="btn-next-step" onclick="toStep3()">Next: Payment ➔</button>
+    </div>
+
+    <!-- STEP 3: PAYMENT -->
+    <div class="form-container" id="step3">
+        <div class="step-header-block">
+            <h2>STEP 3: SECURE PAYMENT</h2>
+            <p>Order will be confirmed after payment verification</p>
+        </div>
+        <div class="qr-wrapper">
+            <img id="mainQrImg" src="qr.png" class="qr-image-main" alt="Payment QR" onerror="this.src='https://via.placeholder.com/250?text=Scan+QR+To+Pay'">
+            <div class="scan-to-pay-text">Scan to Pay</div>
+            <div class="upi-text-row">
+                <span class="pay-paytm">Paytm</span>
+                <span class="pay-gpay">GPay</span>
+                <span class="pay-phonepe">PhonePe</span>
+            </div>
+            <p class="pay-via-text">Scan via any UPI App to pay the processing fee.</p>
+        </div>
+        
+        <label class="field-label">Upload Payment Screenshot</label>
+        <input type="file" id="pProof" class="input-style" accept="image/*">
+        
+        <button class="btn-next-step" onclick="finish()">Submit My Order ➔</button>
+    </div>
+
+    <!-- TRACK ORDER -->
+    <div class="form-container" id="trackPage">
+        <div class="step-header-block">
+            <h2>Track Your Order</h2>
+            <p>Enter your 9-digit Order ID</p>
+        </div>
+        <label class="field-label">Order Number</label>
+        <input type="text" class="input-style" id="trackIdInput" placeholder="Ex: BMH123456">
+        <button class="btn-next-step" onclick="trackOrder()">Track Status</button>
+        <div id="statusResult" style="display:none; margin: 15px;">
+            <div style="background: #fff9db; border: 1.5px dashed #fab005; border-radius: 10px; padding: 20px; text-align: center;">
+                <div style="color: #f08c00; font-weight: 800; font-size: 1rem;">VERIFICATION IN PROGRESS</div>
+                <p style="font-size:0.8rem; color:#444; margin:10px 0;">Payment verification takes 2-4 hours.</p>
+                <p style="font-size:0.7rem; color:#888;">Order ID: <span id="resId"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="form-container" id="contactPage">
+        <div class="step-header-block"><h2>Help & Support</h2></div>
+        <div id="contactFormFields">
+            <label class="field-label">Full Name</label><input type="text" class="input-style" id="cName">
+            <label class="field-label">Query Description</label><textarea class="input-style" id="cMsg" rows="4"></textarea>
+            <button class="btn-next-step" onclick="submitContact()">Submit Query</button>
+        </div>
+        <div id="contactSuccess" style="display:none; padding: 40px; text-align: center;">
+            <p style="color: #15803d; font-weight: 800;">Message Sent! We will call you back.</p>
+        </div>
+    </div>
+
+    <!-- SUCCESS (UPDATED WITH DELIVERY TIME) -->
+    <div class="form-container" id="success">
+        <div style="text-align:center; padding:40px 20px;">
+            <div style="font-size: 4rem; margin-bottom: 15px;">✅</div>
+            <h2 style="color:var(--primary-blue); margin:0;">Booking Successful!</h2>
+            <p style="color:#64748b; margin: 8px 0 20px 0; font-size: 0.9rem;">Your HSRP order has been received.</p>
+            
+            <div class="success-card">
+                <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Order ID</div>
+                <div style="font-weight: 900; font-size: 1.5rem; color:#1e293b;" id="oid"></div>
+                
+                <div style="border-top: 1px solid #e2e8f0; margin: 15px 0; padding-top: 15px;">
+                    <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Delivery Status</div>
+                    <div class="delivery-timeline">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        <span>10 - 12 Working Days</span>
+                    </div>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px; font-weight: 500;">Expected delivery at your registered billing address.</p>
+                </div>
+            </div>
+
+            <button class="btn-next-step" onclick="location.reload()">Back to Home</button>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px;">A confirmation SMS will be sent shortly.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <p><b>Official HSRP Booking Partner</b></p>
+    <p>© 2026 Rosmerta Safety Systems Ltd. | Digital India Initiative</p>
+</footer>
+
+<script>
+function showTab(id) {
+    document.querySelectorAll('.form-container').forEach(el => el.style.display = 'none');
+    const target = document.getElementById(id);
+    if(target) target.style.display = 'block';
+    
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    if(['step1','step2','step3','success'].includes(id)) document.getElementById('navBook').classList.add('active');
+    if(id === 'trackPage') document.getElementById('navTrack').classList.add('active');
+    if(id === 'contactPage') document.getElementById('navContact').classList.add('active');
+
+    window.scrollTo(0,0);
+
+    if(id === 'step3') {
+        const qrImg = document.getElementById('mainQrImg');
+        const timestamp = new Date().getTime();
+        qrImg.src = "qr.png?v=" + timestamp;
+    }
+}
+
+function toStep2() {
+    const state = document.getElementById('vState').value;
+    const reg = document.getElementById('vReg').value;
+    if(!state || reg.length < 4) return alert("Please select state and valid Registration No.");
+    showTab('step2');
+}
+
+function toStep3() {
+    const name = document.getElementById('oName').value;
+    const mob = document.getElementById('oMob').value;
+    if(!name || mob.length < 10) return alert("Please enter valid Owner Name and Mobile No.");
+    showTab('step3');
+}
+
+function finish() {
+    const file = document.getElementById('pProof').files.length;
+    if(!file) return alert("Please upload the payment screenshot to confirm order.");
+    
+    const randomId = "BMH" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('oid').innerText = randomId;
+    showTab('success');
+}
+
+function trackOrder() {
+    const val = document.getElementById('trackIdInput').value;
+    if(!val) return alert("Please enter Order ID.");
+    document.getElementById('resId').innerText = val;
+    document.getElementById('statusResult').style.display = 'block';
+}
+
+function submitContact() {
+    if(!document.getElementById('cName').value) return alert("Please enter your name.");
+    document.getElementById('contactFormFields').style.display = 'none';
+    document.getElementById('contactSuccess').style.display = 'block';
+}
+
+window.onload = () => showTab('step1');
+</script>
+
+</body>
+</html>
